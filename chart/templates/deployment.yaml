@@ -53,7 +53,7 @@ spec:
       volumes:
         - name: config-vol
           configMap:
-            name: nginx-config
+            name: tracerbullet-config
             items:
               - key: nginx.conf
                 path: nginx.conf
