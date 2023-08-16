@@ -1,0 +1,24 @@
+{{- if and .Values.istio .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "tracerbullet.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tracerbullet.labels" . | nindent 4 }}
+spec:
+  gateways:
+  {{- range .Values.istio.gateways }}
+  - {{ . }}
+  {{- end }}
+  hosts:
+  {{- range .Values.istio.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  http:
+    - route:
+        - destination:
+            port:
+              number: {{ .Values.service.port | default "80" }}
+            host: tracerbullet.{{ .Release.Namespace }}.svc.cluster.local
+{{- end }}
